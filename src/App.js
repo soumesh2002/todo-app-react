@@ -1,12 +1,20 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, FormControl, Input, InputLabel } from "@material-ui/core";
 import Todo from "./Todo";
+import db from "./firebase";
+import { collection } from "firebase/firestore";
 
 function App() {
   const [todos, setTodos] = useState([]);
   const [input, setInput] = useState("");
-  console.log("👌", input);
+
+  useEffect(() => {
+    db.collection("todos").onSnapshot((snapshot) => {
+      console.log(snapshot.docs.map((doc) => doc.data().task));
+      return setTodos(snapshot.docs.map((doc) => doc.data().task));
+    });
+  }, []);
 
   const addTodo = (event) => {
     event.preventDefault();
